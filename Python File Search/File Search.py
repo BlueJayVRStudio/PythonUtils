@@ -2,46 +2,48 @@ import os
 import time
 import json
 
-currentDir = os.getcwd()
-cacheRoot = os.path.join(currentDir, "cache")
-print(cacheRoot)
-
 def setupDir(path):
     if not os.path.isdir(path):
         os.makedirs(path)
 
 def fileSearch(key, cacheRoot):
-
+    k = len(key)
     setupDir(cacheRoot)
 
-    try:
-        subfolder = os.path.join(cacheRoot, key)
-        while subfolder[-1] in [" ", "."]:
-            subfolder = subfolder[0:-1]
-        setupDir(subfolder)
-    except:
-        subfolder = os.path.join(cacheRoot, key)
-        while subfolder[-1] in [" ", "."]:
-            subfolder = subfolder[0:-1]
-        subfolder += "---RESTRICTEDWORD---"
-        
-
-    cacheFile = os.path.join(subfolder, "cache.json")
+    hashSets = []
     
+    for i in range(0, k):
+        for j in range(1, 3):
+            if i+j > k:
+                continue
+            substring = key[i:i+j]
+            substring = substring.lower()
 
-    hashset = None
+            # or you can replace with some other character and deal with false positives, which may not be all that bad
+            substring = substring.replace(" ", "_")
+
+            if len(substring) == 1:
+                substring += "_pad"
+
+            subfolder = os.path.join(cacheRoot, substring)
+            setupDir(subfolder)
+            cacheFile = os.path.join(subfolder, "cache.json")
+
+            with open(cacheFile, 'r') as f:
+                temp = set(json.loads(f.read()))
+                hashSets.append(temp)
+            
+    startSet = hashSets[0]
+    for i in range(1, len(hashSets)):
+        startSet = startSet.intersection(hashSets[i])
     
-    if os.path.isfile(cacheFile):
-        # deserialize into hashmap
-        with open(cacheFile, 'r') as f:
-            hashset = set(json.loads(f.read()))
-    if hashset is not None:
-        for i in sorted(list(hashset)):
-            print(i)
-    else:
-        print(None)
+    for i in list(startSet):
+        print(i)
+    
 
 while True:
-    fileSearch(input(), cacheRoot)
+    currentDir = os.getcwd()
+    _cacheRoot = os.path.join(currentDir, "cache_new")
+    fileSearch(input(), _cacheRoot)
 
 
