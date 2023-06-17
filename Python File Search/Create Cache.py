@@ -60,12 +60,12 @@ def mapPathExt(key, path, cacheRoot):
 
             try:
                 subfolder = os.path.join(cacheRoot, substring)
-                if subfolder[-1] == " ":
+                while subfolder[-1] in [" ", "."]:
                     subfolder = subfolder[0:-1]
                 setupDir(subfolder)
             except:
                 subfolder = os.path.join(cacheRoot, substring)
-                if subfolder[-1] == " ":
+                while subfolder[-1] in [" ", "."]:
                     subfolder = subfolder[0:-1]
                 subfolder += "---RESTRICTEDWORD---"
                 setupDir(subfolder)
@@ -86,9 +86,8 @@ def mapPathExt(key, path, cacheRoot):
             hashset.add(path)
 
             with open(cacheFile, 'w+') as f:
-                print(subfolder)
+                #print(subfolder)
                 f.write(json.dumps(list(hashset)))
-
 
 currentDir = os.getcwd()
 cacheRoot = os.path.join(currentDir, "cache")
@@ -97,14 +96,15 @@ print(cacheRoot)
 amountTraversed = 0
 
 q = Queue()
-# specify root folder to traverse
-q.enqueue("D:/Art Assets/")
+# add desired directories to traverse
+q.enqueue("D:/")
+q.enqueue("C:/")
 
 while q.count > 0:
     current = q.dequeue()
-    # filter out any unwanted folders
-    if current == "D:/$RECYCLE.BIN/":
+    if current in ["D:/$RECYCLE.BIN/", currentDir]:
         continue
+    #print(current)
     
     items = None
     try:

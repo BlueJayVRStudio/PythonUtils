@@ -16,12 +16,12 @@ def fileSearch(key, cacheRoot):
 
     try:
         subfolder = os.path.join(cacheRoot, key)
-        if subfolder[-1] == " ":
+        while subfolder[-1] in [" ", "."]:
             subfolder = subfolder[0:-1]
         setupDir(subfolder)
     except:
-        subfolder = os.path.join(cacheRoot, substring)
-        if subfolder[-1] == " ":
+        subfolder = os.path.join(cacheRoot, key)
+        while subfolder[-1] in [" ", "."]:
             subfolder = subfolder[0:-1]
         subfolder += "---RESTRICTEDWORD---"
         
