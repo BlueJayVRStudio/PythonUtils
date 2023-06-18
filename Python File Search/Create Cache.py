@@ -6,6 +6,7 @@ class Node:
         self.obj = obj
         self.next = None
 
+# TO DO: try using min priority queue with subdirectories count as priority
 class Queue:
     def __init__(self):
         self.front = None
@@ -33,8 +34,10 @@ def setupDir(path):
     if not os.path.isdir(path):
         os.makedirs(path)
 
+cacheCounter = 0
+
 def mapPathExt(key, path, hashSetsMap):
-    cacheRoot = os.path.join(os.getcwd(), "cache_new")
+    cacheRoot = os.path.join(os.getcwd(), "cache_new/" + str(cacheCounter))
     setupDir(cacheRoot)
 
     k = len(key)
@@ -75,7 +78,8 @@ def mapPathExt(key, path, hashSetsMap):
                 if os.path.isfile(cacheFile):
                     # deserialize into hashmap
                     with open(cacheFile, 'r') as f:
-                        hashset = set(json.loads(f.read()))
+                        temp = json.loads(f.read())
+                        hashset = set(temp)
                 else:
                     # create new hashset
                     hashset = set()
@@ -120,12 +124,27 @@ while q.count > 0:
         else:
             amountTraversed += os.path.getsize(fullPath[0:-1])
     
-    print (f"file size traversed: { amountTraversed /(1024*1024*1024) }")
+    print (f"file size traversed: { amountTraversed / (1024*1024*1024) }")
+    if (amountTraversed / (1024*1024*1024)) > 100 * (cacheCounter+1):
+        keys = list(_hashSetsMap.keys())
+        for i in keys:
+            cacheRoot = os.path.join(os.getcwd(), "cache_new/" + str(cacheCounter))
+            setupDir(cacheRoot)
+            subfolder = os.path.join(cacheRoot, i)
+            setupDir(subfolder)
+            cacheFile = os.path.join(subfolder, "cache.json")
+            
+            with open(cacheFile, 'w') as f:
+                f.write(json.dumps(list(_hashSetsMap[i])))
+                
+        cacheCounter += 1
+        _hashSetsMap = {}
+        
     # print (f"file size traversed in bytes: { amountTraversed }")
 
 keys = list(_hashSetsMap.keys())
 for i in keys:
-    cacheRoot = os.path.join(currentDir, "cache_new")
+    cacheRoot = os.path.join(currentDir, "cache_new/" + str(cacheCounter))
     setupDir(cacheRoot)
     subfolder = os.path.join(cacheRoot, i)
     setupDir(subfolder)

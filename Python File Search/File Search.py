@@ -29,6 +29,9 @@ def fileSearch(key, cacheRoot):
             setupDir(subfolder)
             cacheFile = os.path.join(subfolder, "cache.json")
 
+            if not os.path.isfile(cacheFile):
+                continue
+
             with open(cacheFile, 'r') as f:
                 temp = set(json.loads(f.read()))
                 hashSets.append(temp)
@@ -37,13 +40,28 @@ def fileSearch(key, cacheRoot):
     for i in range(1, len(hashSets)):
         startSet = startSet.intersection(hashSets[i])
     
-    for i in list(startSet):
-        print(i)
+    return(startSet)
     
 
 while True:
+    term = input()
+
     currentDir = os.getcwd()
-    _cacheRoot = os.path.join(currentDir, "cache_new")
-    fileSearch(input(), _cacheRoot)
+    cacheCounter = 0
+    _cacheRoot = os.path.join(currentDir, "cache_new/" + str(cacheCounter))
+    
+    startSet = fileSearch(term, _cacheRoot)
+    
+    cacheCounter = 1
+    _cacheRoot = os.path.join(currentDir, "cache_new/" + str(cacheCounter))
+    while os.path.isdir(_cacheRoot):
+        startSet = startSet.union(fileSearch(term, _cacheRoot))
+        cacheCounter += 1
+        _cacheRoot = os.path.join(currentDir, "cache_new/" + str(cacheCounter))
+    
+    for i in startSet:
+        print(i)
+    
+    print("results found!")
 
 
