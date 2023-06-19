@@ -1,5 +1,5 @@
-# Random-Python-Utilities
-random, possibly useful stuff\...
+# PythonUtils
+random, possibly useful stuff...
 
 Some of the utilities here will contain file I/O so please use extreme
 caution!
