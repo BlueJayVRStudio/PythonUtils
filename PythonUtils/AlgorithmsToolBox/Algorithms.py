@@ -130,11 +130,11 @@ class MinBinHeap:
         if (self.arrlen(A) > 1):
             self.bubbleup(A, j)
             self.bubbledown(A, j)
-    
+    # O(nlog(n)) implementation; will be changed to O(n)
     def heapify(self, A):
         for i in range(self.arrlen(A), 0, -1):
             self.bubbledown(A, i)
-    
+    # O(nlog(n))
     def heapsort(self, A):
         self.heapify(A)
         result = []
@@ -142,7 +142,7 @@ class MinBinHeap:
             result.append(A[1])
             self.deletemin(A)
         return result
-
+    # O(1)
     def getmin(self, A):
         return A[1]
     
