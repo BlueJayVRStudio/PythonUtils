@@ -1,6 +1,6 @@
 # img files
-.heic
-.png
+*.heic
+*.png
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
