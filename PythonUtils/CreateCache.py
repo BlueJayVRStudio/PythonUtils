@@ -1,6 +1,6 @@
 import os
 import json
-from .AlgorithmsToolBox.Algorithms import *
+from queue import Queue
 
 def setupDir(path):
     if not os.path.isdir(path):
@@ -65,13 +65,13 @@ def main():
 
     q = Queue()
     # desired directory to traverse
-    q.enqueue("D:/")
+    q.put("D:/")
     #q.enqueue("C:/")
 
     _hashSetsMap = {}
 
-    while q.count > 0:
-        current = q.dequeue()
+    while q.qsize() > 0:
+        current = q.get()
         
         
         # filter out unwanted directories
@@ -94,7 +94,7 @@ def main():
             
             isdir = os.path.isdir(fullPath)
             if isdir:
-                q.enqueue(fullPath)
+                q.put(fullPath)
             else:
                 amountTraversed += os.path.getsize(fullPath[0:-1])
         
