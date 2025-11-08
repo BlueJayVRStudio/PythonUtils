@@ -7,9 +7,12 @@ ENV/
 env.bak/
 venv.bak/
 
-# img files
+# media files
 *.heic
 *.png
+*.mp4
+*.gif
+*.mov
 
 # pdf's
 *.pdf
