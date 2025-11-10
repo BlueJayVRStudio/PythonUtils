@@ -17,7 +17,7 @@ venv.bak/
 # pdf's
 *.pdf
 
-[Cc]ache/
+[Cc]ache**/
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
