@@ -40,4 +40,53 @@ def clip_video_ffmpeg(input_path, output_path, start, end, height=480):
     print(f"Video saved to {output_path}")
     return 0
 
-sys.exit(clip_video_ffmpeg(*sys.argv[1:], height=480))
+def clip_gif_ffmpeg(input_path, output_path, start, end, height=480, fps=15):
+    """
+    Trim, resize, and convert a video clip into an optimized GIF using FFmpeg.
+
+    Args:
+        input_path (str): Path to the source video file.
+        output_path (str): Path to save the clipped GIF.
+        start (float | int): Start time in seconds.
+        end (float | int): End time in seconds.
+        height (int): Desired GIF height (width auto-calculated).
+        fps (int): Frames per second for the GIF.
+    """
+    # Use palette for better quality
+    palette_path = "palette.png"
+
+    # Generate palette for better GIF color quality)
+    cmd_palette = [
+        "ffmpeg", "-y",
+        "-ss", str(start),
+        "-to", str(end),
+        "-i", input_path,
+        "-vf", f"fps={fps},scale=-2:{height}:flags=lanczos,palettegen",
+        palette_path
+    ]
+    result = subprocess.run(cmd_palette, capture_output=True, text=True)
+    if result.returncode != 0:
+        print("Failed to generate palette:")
+        print(result.stderr)
+        return 1
+
+    # Create GIF using palette
+    cmd_gif = [
+        "ffmpeg", "-y",
+        "-ss", str(start),
+        "-to", str(end),
+        "-i", input_path,
+        "-i", palette_path,
+        "-filter_complex", f"fps={fps},scale=-2:{height}:flags=lanczos[x];[x][1:v]paletteuse",
+        output_path
+    ]
+    result = subprocess.run(cmd_gif, capture_output=True, text=True)
+    if result.returncode != 0:
+        print("Failed to create GIF:")
+        print(result.stderr)
+        return 1
+
+    print(f"GIF saved to {output_path}")
+    return 0
+
+sys.exit(clip_gif_ffmpeg(*sys.argv[1:], height=480))
