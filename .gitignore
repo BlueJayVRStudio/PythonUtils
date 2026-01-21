@@ -13,6 +13,7 @@ venv.bak/
 *.heic
 *.png
 *.mp4
+*.webm
 *.gif
 *.mov
 
