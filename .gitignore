@@ -1,5 +1,8 @@
 .DS_Store
 
+# Backup Folders
+/[Bb]ackup/
+
 # Environments
 .env
 .venv
