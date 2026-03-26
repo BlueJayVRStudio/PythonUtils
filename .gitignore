@@ -1,7 +1,7 @@
 .DS_Store
 
 # Backup Folders
-/[Bb]ackup/
+[Bb]ackup/
 
 # Environments
 .env
